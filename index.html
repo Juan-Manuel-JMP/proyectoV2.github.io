@@ -680,7 +680,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // 2. Particles.js - Configuración base
 particlesJS("particles-js", {
     "particles": {
-        "number": { "value": 100 },
+        "number": { "value": 240 },
         "color": { "value": "#ffffff" },
         "shape": { "type": "circle" },
         "opacity": { "value": 0.4, "random": true },
@@ -703,22 +703,22 @@ particlesJS("particles-js", {
 // 3. Particles.js - (Segunda instancia)
 particlesJS("particles-js-bmc", {
     "particles": {
-        "number": { "value": 120 }, 
-        "color": { "value": "#2ec4b6" }, 
+        "number": { "value": 240 },
+        "color": { "value": "#ffffff" },
         "shape": { "type": "circle" },
         "opacity": { "value": 0.4, "random": true },
-        "size": { "value": 2 },
+        "size": { "value": 3 },
         "line_linked": {
             "enable": true,
-            "distance": 100,
-            "color": "#2ec4b6",
+            "distance": 120,
+            "color": "#ffffff",
             "opacity": 0.2,
             "width": 1
         },
-        "move": { "enable": true, "speed": 1 } 
+        "move": { "enable": true, "speed": 1.5 }
     },
     "interactivity": {
-        "events": { "onhover": { "enable": true } } 
+        "events": { "onhover": { "enable": true, "mode": "grab" } }
     },
     "retina_detect": true
 });
