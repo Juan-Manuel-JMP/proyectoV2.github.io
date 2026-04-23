@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="shortcut icon" href="logo.jpg" type="image/x-icon">
+<title>Deliv & Trace - Sistema Integral Delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<!-- Typed.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+
+<!-- Particles.js -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+<style>
+:root {
+  --bg:      #050505;
+  --bg2:     #0c0c0c;
+  --card:    rgba(34, 39, 46, 0.6);
+  --border:  rgba(205, 217, 229, 0.15);
+  --accent:  #ff6b35; 
+  --accent2: #ff9f1c; 
+  --safe:    #2ec4b6; 
+  --text:    #adbac7;
+  --text-bright: #cdd9e5;
+  --muted:   #768390;
+  --red:     #e71d36;
+  --glass-blur: blur(15px);
+  --line: rgba(255, 255, 255, 0.1);
+  --glow: 0 0 25px rgba(83, 155, 245, 0.25);
+}
+
+/* ── ANIMACIONES DE ENTRADA ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); filter: blur(10px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 10px rgba(83, 155, 245, 0.1); }
+  50% { box-shadow: 0 0 25px rgba(83, 155, 245, 0.3); }
+  100% { box-shadow: 0 0 10px rgba(83, 155, 245, 0.1); }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { 
+    font-family: sans-serif; 
+    background: var(--bg); 
+    color: var(--text); 
+    font-size: 14px; 
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ── EFECTOS DE FONDO (GLOW AMBIENTAL) ── */
+body::before, body::after {
+  content: ""; position: fixed; width: 60vw; height: 60vw;
+  border-radius: 50%; z-index: -1; filter: blur(120px); opacity: 0.1; pointer-events: none;
+}
+body::before { top: -15%; left: -10%; background: var(--accent); }
+body::after { bottom: -15%; right: -10%; background: var(--safe); }
+
+.gh-line { border: 0; height: 1px; background: var(--line); max-width: 1200px; margin: 0 auto; }
+
+/* ── NAVEGACIÓN GLASS ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(28, 33, 40, 0.1); backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem; height: 70px; transition: 0.4s;
+}
+nav.scrolled { background: rgba(28, 33, 40, 0.85); height: 55px; border-bottom-color: var(--accent); }
+
+.nav-brand { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--accent); font-weight: 700; }
+.nav-brand span { color: var(--text-bright); }
+.nav-menu { display: flex; gap: 0.5rem; list-style: none; }
+.nav-menu a {
+  font-size: 0.65rem; color: var(--text); text-decoration: none;
+  padding: 0.5rem 0.8rem; border-radius: 6px; text-transform: uppercase; font-weight: 600; transition: 0.3s;
+}
+.nav-menu a:hover { color: var(--safe); background: rgba(83, 155, 245, 0.1); transform: translateY(-2px); }
+
+/* Botón hamburguesa visible */
+.menu-toggle {
+    display: none; 
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 18px;
+    cursor: pointer;
+    z-index: 1001;
+}
+.menu-toggle span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: var(--accent);
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+/* ── BOTÓN VOLVER ARRIBA ── */
+.back-to-top {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 99;
+  width: 48px; height: 48px; background: var(--card); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: var(--accent); text-decoration: none;
+  transition: 0.4s; box-shadow: var(--glow);
+}
+.back-to-top:hover { transform: scale(1.1) translateY(-5px); border-color: var(--accent); color: white; }
+
+/* ── HERO ── */
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; animation: fadeInUp 1s ease-out; position: relative; overflow: hidden; }
+
+/* Contenedor de partículas */
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Contenido del hero por encima de las partículas */
+.hero > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Título fluido con clamp */
+.hero-title { 
+    font-family: 'Playfair Display', serif; 
+    font-size: clamp(2.2rem, 8vw, 5rem); 
+    line-height: 1.1; 
+    color: var(--text-bright); 
+}
+.hero-title em { color: var(--accent); font-style: italic; }
+.pill { background: rgba(83, 155, 245, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 0.4rem 1.2rem; border-radius: 50px; font-family: 'JetBrains Mono'; font-size: 0.7rem; margin-bottom: 1.5rem; animation: pulseGlow 3s infinite; }
+
+/* ── LAYOUT ── */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 5rem 2rem; }
+.sec-tag { 
+    color: var(--accent); 
+    font-family: 'JetBrains Mono', monospace; 
+    font-size: 1rem; 
+    margin-bottom: 0.5rem; 
+    letter-spacing: 2px; 
+    
+    /* no render */
+    display: inline-block; 
+    min-height: 1.5em;    
+    line-height: 1.5em;   
+    vertical-align: middle;
+    overflow: hidden;   
+}
+
+/* --- titulo --- */
+.sec-title {
+    margin-top: 1rem;      
+    margin-bottom: 3rem;   
+    font-size: 2.5rem;    
+    color: var(--text-bright);
+    font-family: 'Playfair Display', serif;
+}
+
+/* ── CARDS ── */
+/* Grid auto-adaptable */
+.grid { 
+    display: grid; 
+    gap: 1.5rem; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+}
+.card { 
+    background: var(--card); backdrop-filter: var(--glass-blur); 
+    border: 1px solid var(--border); padding: 2rem; border-radius: 20px; 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+.card:hover { border-color: var(--accent); transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+
+/* ── EQUIPO ── */
+.team-item { background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px; border-left: 3px solid transparent; margin-bottom: 10px; transition: 0.3s; }
+.team-item:hover { background: rgba(255,255,255,0.08); transform: translateX(8px); }
+.team-item strong { display: block; color: #fff; font-size: 0.85rem; }
+.team-item small { color: var(--muted); font-size: 0.75rem; }
+
+/* ── BUYER PERSONA ── */
+/*Grid adaptable */
+.persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+.persona-card { background: var(--card); border: 1px solid var(--border); border-radius: 22px; overflow: hidden; transition: 0.4s; }
+.persona-card:hover { border-color: var(--accent2); transform: scale(1.02); box-shadow: var(--glow); }
+.persona-header { padding: 1.5rem; background: rgba(83, 155, 245, 0.08); display: flex; align-items: center; gap: 1rem; }
+.persona-avatar { width: 50px; height: 50px; border-radius: 50%; background: var(--bg); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+
+/* cambia a 1 col en móvil */
+.persona-body { padding: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem; }
+.pb-label { font-size: 0.6rem; font-family: 'JetBrains Mono'; color: var(--accent); text-transform: uppercase; margin-bottom: 0.4rem; display: block; }
+
+/* ── FODA & BMC ── */
+.foda-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.foda-item { padding: 1.5rem; border-radius: 15px; background: var(--card); border: 1px solid var(--border); transition: 0.3s; }
+.foda-item:hover { transform: translateY(-5px); border-color: var(--accent); }
+
+.bmc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.bmc-item { background: var(--card); border: 1px solid var(--border); padding: 1.2rem; border-radius: 12px; transition: 0.3s; }
+.bmc-item:hover { border-color: var(--accent); background: rgba(83, 155, 245, 0.05); }
+
+/* ── LIST BOXES ── */
+.list-box { background: var(--card); padding: 2rem; border-radius: 20px; border-left: 5px solid var(--red); transition: 0.4s; }
+.list-box.solution { border-left-color: var(--safe); }
+.list-box:hover { transform: scale(1.01); }
+
+.tech-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.65rem; font-family: 'JetBrains Mono'; font-weight: 600; }
+.badge-ia { background: rgba(108, 182, 255, 0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+.badge-trace { background: rgba(87, 171, 90, 0.15); color: var(--safe); border: 1px solid var(--safe); }
+
+footer {
+    /* Padding responsivo en el footer*/
+    padding: 0.8rem 1rem; 
+    text-align: center;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    width: 100%;
+    box-sizing: border-box; 
+    
+    /* Animación */
+    animation: colorChange 6s infinite alternate; 
+    transition: all 0.4s ease;
+}
+
+#strategy-section {
+    position: relative;
+    overflow: hidden; /* Evita que las partículas se escapen */
+}
+
+#particles-js-bmc {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1; 
+    pointer-events: none; 
+}
+
+/* para el z-index de los cuadros que se queden arriba */
+.sec-tag, .sec-title, .bmc-grid {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes colorChange {
+    0% {
+        background-color: var(--bg2);
+        border-top-color: var(--border);
+    }
+    33% {
+        background-color: rgba(255, 107, 53, 0.08); 
+        border-top-color: var(--accent);
+    }
+    66% {
+        background-color: rgba(46, 196, 182, 0.08); 
+        border-top-color: var(--safe);
+    }
+    100% {
+        background-color: rgba(255, 159, 28, 0.08); 
+        border-top-color: var(--accent2);
+    }
+}
+
+footer strong {
+    color: var(--text-bright);
+    display: inline-block;
+    margin-bottom: 0.4rem;
+}
+
+/* ajuste para móvil */
+@media (max-width: 873px) {
+    footer {
+        padding: 0.6rem 0.9rem;
+        font-size: 0.7rem; 
+    }
+}
+
+/* ── menú flotante ── */
+@media (max-width: 873px) {
+    nav { 
+        padding: 0 1.2rem; 
+        height: 50px;
+    }
+
+    .menu-toggle { 
+        display: flex; 
+        order: 2; /* la hamburguesa esté a la derecha */
+    } 
+
+    .nav-menu {
+        position: fixed;
+        top: 80px; 
+        right: 1.5rem; 
+        
+        transform: translateX(120%) scale(0.9);
+        opacity: 0;
+        visibility: hidden;
+
+        width: 200px; 
+        height: auto;
+        padding: 1rem;
+        
+        background: rgba(34, 39, 46, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(83, 155, 245, 0.3);
+        border-radius: 18px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        
+        flex-direction: column;
+        gap: 0.2rem;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 999;
+    }
+
+    .nav-menu.active { 
+        transform: translateX(0) scale(1);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-menu a { 
+        font-size: 0.8rem; 
+        display: block; 
+        padding: 0.7rem 1rem; 
+        border-radius: 10px;
+        border-bottom: none;
+        text-align: right;
+        color:  rgba(13, 140, 199, 0.829)
+    }
+
+    .nav-menu a:hover {
+        background: rgba(83, 155, 245, 0.15);
+        color: var(--accent2);
+        transform: translateX(-5px);
+    }
+
+    .wrap { padding: 3rem 1.5rem; }
+    
+    .sec-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+      }
+    #discovery .grid { grid-template-columns: 1fr !important; }
+}
+</style>
+</head>
+<body style="animation: fadeInUp 1.2s ease-out;">
+
+<a href="#inicio" class="back-to-top">↑</a>
+
+<nav>
+  <div class="nav-brand">Deliv <span>& Trace</span></div>
+
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+
+  <ul class="nav-menu">
+    <li><a href="#discovery">Problema</a></li>
+    <li><a href="#equipo">Equipo</a></li>
+    <li><a href="#charter">Charter</a></li>
+    <li><a href="#foda">Estrategia</a></li>
+    <li><a href="#buyer">Especialización</a></li>
+    <li><a href="#Core">Solución</a></li>
+    <li><a href="#solucion">Ecosistema</a></li>
+  </ul>
+</nav>
+
+<header class="hero" id="inicio">
+  <div id="particles-js"></div>
+  <div class="pill">Trabajo Grupal N° 2 - Hito 2 - V2</div>
+  <h1 class="hero-title">Delivering the<br><em>Future of Food</em></h1>
+  <p style="color: var(--muted); max-width: 700px; margin: 1.8rem 0; font-size: 1.1rem;">Sistema Integral Multirrubro con Trazabilidad Blockchain, Integración de Pagos Global y Logística Optimizada por IA.</p>
+  
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+    <span class="tech-badge badge-ia">AI Core v3.0</span>
+    <span class="tech-badge badge-trace">Smart-Trace Certified</span>
+  </div>
+</header>
+
+<hr class="gh-line">
+
+<section class="wrap" id="discovery">
+  <div class="sec-tag" id="typed-discovery"></div>
+  <h2 class="sec-title">El Problema & El Impacto</h2>
+  <div class="grid">
+    <div class="list-box">
+      <h4 style="color: #ff4d4d !important; font-weight: bold;">Escenario Actual (Dolores)</h4>
+      <p style="font-size: 0.85rem; margin-top: 1rem; color: var(--muted); line-height: 2;">
+        · Incertidumbre sobre el origen y frescura.<br>
+        · Pérdida de rentabilidad por rutas ineficientes.<br>
+        · Falta de transparencia en manipulación.<br>
+        · Dificultad para integrar pasarelas de pago globales.<br>
+        · **Falta de datos en tiempo real para la toma de decisiones.**
+      </p>
+    </div>
+    <div class="list-box solution">
+      <h4 style="color: #2ec4b6 !important; font-weight: bold;">Nuestra Solución (Impacto)</h4>
+      <p style="font-size: 0.85rem; margin-top: 1rem; color: var(--muted); line-height: 2;">
+        · Trazabilidad inmutable vía Blockchain.<br>
+        · Optimización logística mediante IA predictiva.<br>
+        · Dashboard de control de calidad real.<br>
+        · Pasarela de pagos multimoneda unificada.<br>
+        · **Reducción del 15% en costos de combustible y tiempos.**
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="gh-line">
+
+<section class="wrap" id="equipo">
+  <div class="sec-tag" id="typed-equipo"></div>
+  <h2 class="sec-title">Equipo & Roles</h2>
+  <div class="grid">
+    <div class="card">
+      <div style="font-family: 'JetBrains Mono'; font-size: 0.9rem; color: var(--accent); margin-bottom: 1rem; letter-spacing: 1px;">IFTS N° 9 - ANALISTAS</div>
+      <div class="team-item" style="border-left-color: var(--accent);"><strong>Luis Soto</strong><small>Líder</small></div>
+      <div class="team-item" style="border-left-color: var(--accent);"><strong>Ana Luz</strong><small>QA & UX Designer</small></div>
+      <div class="team-item" style="border-left-color: var(--accent);"><strong>Pedro San</strong><small>Analista Funcional</small></div>
+      <div class="team-item" style="border-left-color: var(--accent);"><strong>Lucía Méndez</strong><small>Analista de Requerimientos</small></div>
+      <div class="team-item" style="border-left-color: var(--accent);"><strong>Marcos Vera</strong><small>Especialista en Ciberseguridad</small></div>
+      <div class="team-item" style="border-left-color: var(--accent);"><strong>Julia Domenech</strong><small>Documentadora Técnica</small></div>
+      <div class="team-item" style="border-left-color: var(--accent);"><strong>Roberto K.</strong><small>Analista BI</small></div>
+    </div>
+    <div class="card">
+      <div style="font-family: 'JetBrains Mono'; font-size: 0.9rem; color: var(--safe); margin-bottom: 1rem; letter-spacing: 1px;">IFTS N° 9 - COMERCIALIZACIÓN</div>
+      <div class="team-item" style="border-left-color: var(--safe);"><strong>Carlos Ruiz</strong><small>Líder</small></div>
+      <div class="team-item" style="border-left-color: var(--safe);"><strong>Elena Paz</strong><small>Marketing Planner</small></div>
+      <div class="team-item" style="border-left-color: var(--safe);"><strong>Sonia Val</strong><small>Analista de Mercado</small></div>
+      <div class="team-item" style="border-left-color: var(--safe);"><strong>Martín Fierro</strong><small>Product Manager</small></div>
+      <div class="team-item" style="border-left-color: var(--safe);"><strong>Clara Soler</strong><small>Content Strategist</small></div>
+      <div class="team-item" style="border-left-color: var(--safe);"><strong>Dante Arca</strong><small>Especialista en Ads</small></div>
+      <div class="team-item" style="border-left-color: var(--safe);"><strong>Sofía G.</strong><small>PR & Comunicaciones</small></div>
+    </div>
+    <div class="card">
+      <div style="font-family: 'JetBrains Mono'; font-size: 0.9rem; color: var(--red); margin-bottom: 1rem; letter-spacing: 1px;">IFTS N° X - DEVS</div>
+      <div class="team-item" style="border-left-color: var(--red);"><strong>Juan Perez</strong><small>Líder</small></div>
+      <div class="team-item" style="border-left-color: var(--red);"><strong>Maria García</strong><small>Fullstack Developer</small></div>
+      <div class="team-item" style="border-left-color: var(--red);"><strong>Ramiro Oz</strong><small>Blockchain Specialist</small></div>
+      <div class="team-item" style="border-left-color: var(--red);"><strong>Esteban Peña</strong><small>Backend Dev (Node.js)</small></div>
+      <div class="team-item" style="border-left-color: var(--red);"><strong>Laura Enzo</strong><small>Frontend Dev (React)</small></div>
+      <div class="team-item" style="border-left-color: var(--red);"><strong>Hugo Boss</strong><small>Scrum Master</small></div>
+      <div class="team-item" style="border-left-color: var(--red);"><strong>Iván T.</strong><small>App Mobile Developer</small></div>
+    </div>
+  </div>
+</section>
+
+<hr class="gh-line">
+
+<section class="wrap" id="charter">
+  <div class="sec-tag" id="typed-charter"></div>
+  <h2 class="sec-title">Definición Estratégica</h2>
+  <div class="grid">
+    <div class="card" style="border-color: green;"><h4>[ Problema ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">Falta de transparencia en cadena de frío y desconfianza en el origen de insumos.</p></div>
+    <div class="card"><h4>[ Objetivo ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">Digitalizar trazabilidad vía Blockchain y reducir costos operativos un 20% con IA.</p></div>
+    <div class="card" style="border-color: blue;"><h4>[ Alcance ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">Desde recepción de materia prima y sensores IoT hasta la entrega final al cliente.</p></div>
+    <div class="card"><h4>[ Justificación ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">Demanda creciente por "comida real". Ventaja competitiva inmutable y tecnológica.</p></div>
+    <div class="card" style="border-color: pink;"><h4>[ Stakeholders ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">Restaurantes, riders, proveedores, bromatología y consumidores finales.</p></div>
+    <div class="card"><h4>[ Riesgos ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">Conectividad IoT inestable y resistencia tecnológica de proveedores tradicionales.</p></div>
+    <div class="card" style="border-color: cyan;"><h4>[ Mercado ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">FoodTech: PyMEs gastronómicas, Dark Kitchens y comercios multirrubro.</p></div>
+    <div class="card"><h4>[ Entregables ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">Software Central, App Repartidores, Smart Contracts y Dashboard de Analítica.</p></div>
+    <div class="card" style="border-color: var(--accent2);"><h4>[ Escalabilidad ]</h4><p style="font-size:0.8rem; margin-top:0.8rem; color: var(--muted);">Capacidad de integrar rubros de farmacia y productos perecederos de alto valor.</p></div>
+  </div>
+</section>
+
+<hr class="gh-line">
+
+<section class="wrap" id="foda">
+  <div class="sec-tag" id="typed-foda"></div>
+  <h2 class="sec-title">Análisis FODA & BMC</h2>
+  <div class="card" style="margin-bottom: 1.5rem; border-left: 4px solid var(--safe);">
+    <h3 style="color: var(--safe);">Diferenciación Enfocada (Porter)</h3>
+    <p>No competimos por volumen masivo. Nos enfocamos en el <strong>segmento de calidad y seguridad</strong>, ofreciendo transparencia absoluta vía Blockchain.</p>
+  </div>
+  <div class="foda-grid" style="margin-bottom: 2rem;">
+    <div class="foda-item"><h4>Fortalezas</h4><p style="font-size:0.75rem; color:var(--muted);">· IP propia IA/Web3.<br>· Equipo senior.<br>· Trazabilidad 360°.<br>· Escalabilidad modular.</p></div>
+    <div class="foda-item"><h4>Oportunidades</h4><p style="font-size:0.75rem; color:var(--muted);">· Crecimiento Sustentable.<br>· Nuevas leyes de trazabilidad.<br>· Mercado FoodTech virgen.<br>· Alianzas B2B.</p></div>
+    <div class="foda-item"><h4>Debilidades</h4><p style="font-size:0.75rem; color:var(--muted);">· Costo hardware IoT.<br>· Dependencia de red externa.<br>· Curva de adopción.<br>· Fase de test inicial.</p></div>
+    <div class="foda-item"><h4>Amenazas</h4><p style="font-size:0.75rem; color:var(--muted);">· Regulaciones Web3.<br>· Competencia Low-Cost.<br>· Inestabilidad de hardware.<br>· Gigantes del sector.</p></div>
+  </div>
+  <div class="bmc-grid">
+    <div class="bmc-item" style="border-color: var(--red);"><h4>Socios Clave</h4><p style="font-size:0.65rem;">IoT & Cloud Providers</p></div>
+    <div class="bmc-item"><h4>Actividades</h4><p style="font-size:0.65rem;">I+D IA/Blockchain</p></div>
+    <div class="bmc-item" style="border-color: var(--accent);"><h4>Propuesta</h4><p style="font-size:0.65rem;">Confianza Inmutable</p></div>
+    <div class="bmc-item"><h4>Relaciones</h4><p style="font-size:0.65rem;">Soporte VIP SaaS</p></div>
+    <div class="bmc-item" style="border-color: rgba(112, 105, 11, 0.582);"><h4>Segmentos</h4><p style="font-size:0.65rem;">Dark Kitchens / PyMES</p></div>
+    <div class="bmc-item"><h4>Recursos</h4><p style="font-size:0.65rem;">Infraestructura Web3</p></div>
+    <div class="bmc-item" style="border-color: var(--safe);"><h4>Canales</h4><p style="font-size:0.65rem;">App / Web / API</p></div>
+    <div class="bmc-item"><h4>Costos</h4><p style="font-size:0.65rem;">Desarrollo & AWS</p></div>
+    <div class="bmc-item" style="border-color: var(--safe);"><h4>Ingresos</h4><p style="font-size:0.65rem;">SaaS & Transacción</p></div>
+    <div class="bmc-item"><h4>Flujo</h4><p style="font-size:0.65rem;">Hardware & Licencias</p></div>
+  </div>
+</section>
+
+<hr class="gh-line">
+
+<section class="wrap" id="buyer">
+  <div class="sec-tag" id="typed-buyer"></div>
+  <h2 class="sec-title">Buyer Persona</h2>
+  <div class="persona-grid">
+    <div class="persona-card">
+      <div class="persona-header"><div class="persona-avatar">👨‍🍳</div><h3>Mateo (42) — Chef Propietario</h3></div>
+      <div class="persona-body">
+        <div class="persona-block"><span class="pb-label">Dolor</span><p>Desperdicio de stock y logística opaca.</p></div>
+        <div class="persona-block"><span class="pb-label">Meta</span><p>Optimizar compras y asegurar calidad.</p></div>
+        <div class="persona-block"><span class="pb-label">Hábito</span><p>Busca soluciones técnicas y métricas claras.</p></div>
+        <div class="persona-block"><span class="pb-label">Uso</span><p>Dashboard administrativo diario.</p></div>
+      </div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-header"><div class="persona-avatar">👩‍💻</div><h3>Sofía (29) — Consumidora Consciente</h3></div>
+      <div class="persona-body">
+        <div class="persona-block"><span class="pb-label">Dolor</span><p>Miedo a alimentos mal conservados.</p></div>
+        <div class="persona-block"><span class="pb-label">Meta</span><p>Verificar origen y frescura por QR.</p></div>
+        <div class="persona-block"><span class="pb-label">Hábito</span><p>Usuario intensivo de apps y pagos digitales.</p></div>
+        <div class="persona-block"><span class="pb-label">Uso</span><p>App mobile y escaneo de trazabilidad.</p></div>
+      </div>
+    </div>
+    <div class="persona-card">
+        <div class="persona-header"><div class="persona-avatar">📦</div><h3>Ricardo (50) — Proveedor Mayorista</h3></div>
+        <div class="persona-body">
+          <div class="persona-block"><span class="pb-label">Dolor</span><p>Falta de prueba de entrega y calidad.</p></div>
+          <div class="persona-block"><span class="pb-label">Meta</span><p>Certificar su mercadería ante el cliente.</p></div>
+          <div class="persona-block"><span class="pb-label">Hábito</span><p>Gestiona grandes volúmenes de stock.</p></div>
+          <div class="persona-block"><span class="pb-label">Uso</span><p>Integración con Ledger Blockchain.</p></div>
+        </div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-header"><div class="persona-avatar">🛵</div><h3>Julián (24) — Logistic Partner</h3></div>
+        <div class="persona-body">
+          <div class="persona-block"><span class="pb-label">Dolor</span><p>Rutas lentas y pagos demorados.</p></div>
+          <div class="persona-block"><span class="pb-label">Meta</span><p>Maximizar entregas con rutas eficientes.</p></div>
+          <div class="persona-block"><span class="pb-label">Hábito</span><p>Dependencia total del GPS y rapidez.</p></div>
+          <div class="persona-block"><span class="pb-label">Uso</span><p>App de ruteo dinámico con IA.</p></div>
+        </div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-header"><div class="persona-avatar">🏢</div><h3>Valeria (35) — Admin Dark Kitchen</h3></div>
+        <div class="persona-body">
+          <div class="persona-block"><span class="pb-label">Dolor</span><p>Caos en pedidos de múltiples marcas.</p></div>
+          <div class="persona-block"><span class="pb-label">Meta</span><p>Centralizar la logística multirrubro.</p></div>
+          <div class="persona-block"><span class="pb-label">Hábito</span><p>Multitasking y reporte de eficiencia.</p></div>
+          <div class="persona-block"><span class="pb-label">Uso</span><p>Sistema central unificado.</p></div>
+        </div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-header"><div class="persona-avatar">🛡️</div><h3>Dr. Aranda (55) — Bromatólogo</h3></div>
+        <div class="persona-body">
+          <div class="persona-block"><span class="pb-label">Dolor</span><p>Dificultad para auditar cadenas de frío.</p></div>
+          <div class="persona-block"><span class="pb-label">Meta</span><p>Acceso a datos históricos inalterables.</p></div>
+          <div class="persona-block"><span class="pb-label">Hábito</span><p>Inspección rigurosa y normativa legal.</p></div>
+          <div class="persona-block"><span class="pb-label">Uso</span><p>Módulo de auditoría externa.</p></div>
+        </div>
+      </div>
+  </div>
+</section>
+
+<hr class="gh-line">
+
+<section class="wrap" id="Core">
+  <div class="sec-tag" id="typed-core"></div>
+  <h2 class="sec-title">Ecosistema Tecnológico</h2>
+  <div class="grid">
+    <div class="card" style="border-top: 4px solid var(--accent2);">
+      <span style="font-size: 1.5rem;">💳</span>
+      <h3 style="margin-top: 1rem;">Pagos Globales</h3>
+      <p style="font-size: 0.8rem; color: var(--muted);">Stripe, PayPal y Crypto integrados. Liquidación inmediata y multimoneda.</p>
+    </div>
+    <div class="card" style="border-top: 4px solid var(--safe);">
+      <span style="font-size: 1.5rem;">⛓️</span>
+      <h3 style="margin-top: 1rem;">Smart-Trace Ledger</h3>
+      <p style="font-size: 0.8rem; color: var(--muted);">Blockchain propio para registrar temperatura y manipulación de forma inmutable.</p>
+    </div>
+    <div class="card" style="border-top: 4px solid var(--red);">
+      <span style="font-size: 1.5rem;">🤖</span>
+      <h3 style="margin-top: 1rem;">Neural Logistics</h3>
+      <p style="font-size: 0.8rem; color: var(--muted);">IA predictiva para ruteo dinámico y despacho automático de última milla.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="gh-line">
+
+<section class="wrap" id="solucion">
+  <div class="sec-tag" id="typed-solucion"></div>
+  <h2 class="sec-title">Solución por Rubro</h2>
+  <div class="grid">
+    <div class="card"><h3><span>🍕 Gastronomía</span></h3><p>Gestión de cocción y despacho automático.</p></div>
+    <div class="card"><h3>🍏 Retail Frescos</h3><p>Control de vencimientos y reposición inteligente.</p></div>
+    <div class="card"><h3>🍣 Alta Cocina</h3><p>Logística de cadena de frío premium garantizada.</p></div>
+  </div>
+</section>
+
+<section class="wrap" id="strategy-section">
+  <div id="particles-js-bmc"></div>
+  <div class="sec-tag" id="typed-strategy"></div>
+  <h2 class="sec-title">Business Model Canvas</h2>
+  <div class="bmc-grid">
+    <div class="bmc-item"><h4>· Asociaciones</h4><p>· Proveedores IoT<br>· Flotas Locales</p></div>
+    <div class="bmc-item"><h4>· Actividades</h4><p>· I+D Algoritmos<br>· Soporte App</p></div>
+    <div class="bmc-item" style="border-color: var(--accent);"><h4>· Propuesta</h4><p>· Trazabilidad total<br>· IA Logística</p></div>
+    <div class="bmc-item"><h4>· Relaciones</h4><p>· Autoservicio<br>· Soporte VIP</p></div>
+    <div class="bmc-item"><h4>· Segmentos</h4><p>· PYMES Food<br>· Dark Kitchens</p></div>
+  </div>
+</section>
+
+<footer>
+  <strong>Deliv & Trace System</strong>
+  <p>Innovación en Logística y Seguridad Alimentaria - 2026</p>
+  <p>IFTS N°9 - Análisis de Sistemas & Comercialización</p>
+</footer>
+
+<script>
+// Control de scroll para el Nav
+window.onscroll = function() {
+  const nav = document.querySelector('nav');
+  if (window.pageYOffset > 50) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+};
+
+// Función para abrir/cerrar menú hamburguesa
+function toggleMenu() {
+    document.querySelector('.nav-menu').classList.toggle('active');
+}
+
+// Cerrar menú al hacer click en un link (para móviles)
+document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('.nav-menu').classList.remove('active');
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const texts = {
+        'typed-discovery': ['Discovery'],
+        'typed-equipo': ['Estructura Interna'],
+        'typed-charter': ['Project Charter'],
+        'typed-foda': ['Estrategia'],
+        'typed-buyer': ['Especialización'],
+        'typed-core': ['Infraestructura Core'],
+        'typed-solucion': ['Ecosistema'],
+        'typed-strategy': ['Business Strategy']
+    };
+
+    Object.keys(texts).forEach(id => {
+        // Usamos trim() por si se coló algún espacio en el HTML
+        const element = document.getElementById(id);
+        if (element) {
+            element.innerHTML = ""; 
+            new Typed(`#${id}`, {
+                strings: texts[id],
+                typeSpeed: 30,
+                backSpeed: 30,
+                backDelay: 1900,
+                loop: true,
+                cursorChar: '_',
+                showCursor: true,
+                autoInsertCss: true
+            });
+        }
+    });
+});
+
+// 2. Particles.js - Configuración base
+particlesJS("particles-js", {
+    "particles": {
+        "number": { "value": 100 },
+        "color": { "value": "#ffffff" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.4, "random": true },
+        "size": { "value": 3 },
+        "line_linked": {
+            "enable": true,
+            "distance": 120,
+            "color": "#ffffff",
+            "opacity": 0.2,
+            "width": 1
+        },
+        "move": { "enable": true, "speed": 1.5 }
+    },
+    "interactivity": {
+        "events": { "onhover": { "enable": true, "mode": "grab" } }
+    },
+    "retina_detect": true
+});
+
+// 3. Particles.js - (Segunda instancia)
+particlesJS("particles-js-bmc", {
+    "particles": {
+        "number": { "value": 120 }, 
+        "color": { "value": "#2ec4b6" }, 
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.4, "random": true },
+        "size": { "value": 2 },
+        "line_linked": {
+            "enable": true,
+            "distance": 100,
+            "color": "#2ec4b6",
+            "opacity": 0.2,
+            "width": 1
+        },
+        "move": { "enable": true, "speed": 1 } 
+    },
+    "interactivity": {
+        "events": { "onhover": { "enable": true } } 
+    },
+    "retina_detect": true
+});
+</script>
+
+</body>
+</html>
