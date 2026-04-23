@@ -240,14 +240,14 @@ footer {
     overflow: hidden; /* Evita que las partículas se escapen */
 }
 
-#particles-js-bmc {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1; 
-    pointer-events: none; 
+#particles-js {
+  position: fixed; /* Cambiado de absolute a fixed */
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1; /* Enviado al fondo detrás de todo */
+  pointer-events: none; /* Permite hacer clic en los botones de arriba */
 }
 
 /* para el z-index de los cuadros que se queden arriba */
@@ -360,7 +360,7 @@ footer strong {
 </style>
 </head>
 <body style="animation: fadeInUp 1.2s ease-out;">
-
+<div id="particles-js"></div>
 <a href="#inicio" class="back-to-top">↑</a>
 
 <nav>
@@ -383,7 +383,7 @@ footer strong {
 </nav>
 
 <header class="hero" id="inicio">
-  <div id="particles-js"></div>
+  
   <div class="pill">Trabajo Grupal N° 2 - Hito 2 - V2</div>
   <h1 class="hero-title">Delivering the<br><em>Future of Food</em></h1>
   <p style="color: var(--muted); max-width: 700px; margin: 1.8rem 0; font-size: 1.1rem;">Sistema Integral Multirrubro con Trazabilidad Blockchain, Integración de Pagos Global y Logística Optimizada por IA.</p>
@@ -609,7 +609,7 @@ footer strong {
 </section>
 
 <section class="wrap" id="strategy-section">
-  <div id="particles-js-bmc"></div>
+
   <div class="sec-tag" id="typed-strategy"></div>
   <h2 class="sec-title">Business Model Canvas</h2>
   <div class="bmc-grid">
@@ -678,50 +678,85 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// 2. Particles.js - Configuración base
 particlesJS("particles-js", {
-    "particles": {
-        "number": { "value": 240 },
-        "color": { "value": "#ffffff" },
-        "shape": { "type": "circle" },
-        "opacity": { "value": 0.4, "random": true },
-        "size": { "value": 3 },
-        "line_linked": {
-            "enable": true,
-            "distance": 120,
-            "color": "#ffffff",
-            "opacity": 0.2,
-            "width": 1
-        },
-        "move": { "enable": true, "speed": 1.5 }
+  "particles": {
+    "number": {
+      "value": 80, // Bajamos la cantidad para que las partículas grandes no saturen
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
     },
-    "interactivity": {
-        "events": { "onhover": { "enable": true, "mode": "grab" } }
+    "color": {
+      "value": "#ff6b35"
     },
-    "retina_detect": true
-});
-
-// 3. Particles.js - (Segunda instancia)
-particlesJS("particles-js-bmc", {
-    "particles": {
-        "number": { "value": 240 },
-        "color": { "value": "#ffffff" },
-        "shape": { "type": "circle" },
-        "opacity": { "value": 0.4, "random": true },
-        "size": { "value": 3 },
-        "line_linked": {
-            "enable": true,
-            "distance": 120,
-            "color": "#ffffff",
-            "opacity": 0.2,
-            "width": 1
-        },
-        "move": { "enable": true, "speed": 1.5 }
+    "shape": {
+      "type": "circle"
     },
-    "interactivity": {
-        "events": { "onhover": { "enable": true, "mode": "grab" } }
+    "opacity": {
+      "value": 0.4,
+      "random": true,
+      "anim": {
+        "enable": true,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
     },
-    "retina_detect": true
+    "size": {
+      "value": 8, // <--- AQUÍ: Aumentado de 2 a 8 para que sean bien visibles
+      "random": true, // Esto hace que varíen entre pequeñas y grandes
+      "anim": {
+        "enable": true,
+        "speed": 2,
+        "size_min": 1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#ff6b35",
+      "opacity": 0.2,
+      "width": 1.5
+    },
+    "move": {
+      "enable": true,
+      "speed": 2,
+      "direction": "none",
+      "random": false,
+      "straight": false,
+      "out_mode": "out",
+      "bounce": false
+    }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "bubble" // Las partículas crecen al pasar el mouse
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "push"
+      },
+      "resize": true
+    },
+    "modes": {
+      "bubble": {
+        "distance": 200,
+        "size": 15, // Al pasar el mouse suben a tamaño 15
+        "duration": 2,
+        "opacity": 0.8,
+        "speed": 3
+      },
+      "push": {
+        "particles_nb": 4
+      }
+    }
+  },
+  "retina_detect": true
 });
 </script>
 
